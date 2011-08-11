@@ -4,6 +4,7 @@ PostInstall.txt
 README.rdoc
 Rakefile
 lib/utf8_to_gsm.rb
+lib/utf8_to_gsm/utf8_to_gsm_converter.rb
 script/console
 script/destroy
 script/generate

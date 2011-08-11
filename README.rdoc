@@ -12,6 +12,7 @@ The utf8_to_gsm gem provides functionality to convert UTF-8 characters to their 
 * Additionally, any given UTF-8 characters which do not exist in the GSM alphabet are transliterated (with the help of 'unidecoder') to the closest possible ASCII character.
 * This library may be useful for people who need to send SMS messages via SMPP directly to an SMSC using the GSM-7 encoding ("Default SMSC Alphabet"), data_coding = 0x00.
 * Transliteration was chosen to provide the closest possible displayable character using GSM. Otherwise, most characters would simply not be displayed, or appear as "?" on mobile phones.
+* 'unidecoder' is used so that this library can work with Ruby 1.8.7. Much of the functionality of 'unidecoder' is provided by Ruby 1.9.2.  However... the need at the time of writing was Ruby 1.8.7.
 
 == SYNOPSIS:
 

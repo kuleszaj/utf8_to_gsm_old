@@ -88,23 +88,23 @@ module Utf8ToGsm
 	def self.to_gsm string 
     # Unpack the string (presumed to be UTF-8) to it's binary value
 		string.unpack('U*').collect{|unicode|
-    if ONE_TO_ONE.include?(unicode)
-      # Check if the binary value for the character is in 'identical' Unicode to GSM ranges
-      unicode
-		elsif @unicode_to_gsm[unicode].nil?
-      # If the Unicode char is not in the GSM mapping, proceed to transliteration
+      if ONE_TO_ONE.include?(unicode)
+        # Check if the binary value for the character is in 'identical' Unicode to GSM ranges
+        unicode
+      elsif @unicode_to_gsm[unicode].nil?
+        # If the Unicode char is not in the GSM mapping, proceed to transliteration
 
-      # Check if the binary value for the character is in the Unicode to ASCII mapping
-      # If not, transliterate the given character to ASCII using Unicoder
-      # Else, use the ASCII binary value found in the mapping
-			ascii = (@unicode_to_ascii[unicode].nil?) ? (Unidecoder.decode([unicode].pack('U*')).unpack('U*')) : (@unicode_to_ascii[unicode])
+        # Check if the binary value for the character is in the Unicode to ASCII mapping
+        # If not, transliterate the given character to ASCII using Unicoder
+        # Else, use the ASCII binary value found in the mapping
+        ascii = (@unicode_to_ascii[unicode].nil?) ? (Unidecoder.decode([unicode].pack('U*')).unpack('U*')) : (@unicode_to_ascii[unicode])
 
-      # Now that we have the ASCII binary value, try converting it to GSM again (all ASCII maps to GSM)
-      gsm = to_gsm(ascii.pack('U*')).unpack('c*')
-		else
-      # Else, use the GSM binary value found in the mapping
-			@unicode_to_gsm[unicode]
-		end
+        # Now that we have the ASCII binary value, try converting it to GSM again (all ASCII maps to GSM)
+        gsm = to_gsm(ascii.pack('U*')).unpack('c*')
+      else
+        # Else, use the GSM binary value found in the mapping
+        @unicode_to_gsm[unicode]
+      end
     # Take all the binary values, and pack them back up
 		}.flatten.pack('c*')
 	end
