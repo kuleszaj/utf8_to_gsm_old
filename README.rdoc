@@ -4,29 +4,32 @@
 
 == DESCRIPTION:
 
-FIX (describe your package)
+The utf8_to_gsm gem provides functionality to convert UTF-8 characters to their GSM equivalents.
 
 == FEATURES/PROBLEMS:
 
-* FIX (list of features or problems)
+* The utf8_to_gsm gem provides functionality to convert UTF-8 characters to their GSM equivalents.
+* Additionally, any given UTF-8 characters which do not exist in the GSM alphabet are transliterated (with the help of 'unidecoder') to the closest possible ASCII character.
+* This library may be useful for people who need to send SMS messages via SMPP directly to an SMSC using the GSM-7 encoding ("Default SMSC Alphabet"), data_coding = 0x00.
+* Transliteration was chosen to provide the closest possible displayable character using GSM. Otherwise, most characters would simply not be displayed, or appear as "?" on mobile phones.
 
 == SYNOPSIS:
 
-  FIX (code sample of usage)
+  Utf8ToGsm.to_gsm("Convert me to GSM")
 
 == REQUIREMENTS:
 
-* FIX (list of requirements)
+* unidecoder (>= 1.1.1)
 
 == INSTALL:
 
-* FIX (sudo gem install, anything else)
+* gem install utf8_to_gsm
 
 == LICENSE:
 
 (The MIT License)
 
-Copyright (c) 2011 FIXME full name
+Copyright (c) 2011 Justin Kulesza
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the

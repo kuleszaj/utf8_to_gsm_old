@@ -6,8 +6,12 @@ module Utf8ToGsm
 
 	# Mapping of GSM default alphabet to Unicode code points
 	# This is only the default GSM alphabet, and does not feature
-	# single shift or locking shift tables
-	DEFAULT_CODEPOINT_MAPPING = [
+	# single shift or locking shift tables. Only values which differ
+  # between GSM and Unicode are provided.
+  # Mapping of values courtesy of Unicode, Inc.
+  # http://unicode.org/Public/MAPPINGS/ETSI/GSM0338.TXT
+  
+	GSM_TO_UNICODE = [
 	0x00,	0x40,	 # COMMERCIAL AT	@
 	0x01,	0xA3,	 # POUND SIGN	£
 	0x02,	0x24,	 # DOLLAR SIGN	$
@@ -63,49 +67,43 @@ module Utf8ToGsm
 	]
 
   # These are for transliterations which are broken or mangled in our transliteration library
-  EXTRA_UNICODE_TRANSLITERATIONS = [
+  ASCII_TO_UNICODE = [
   [0x3C,0x3C], 0xAB,    # Left Chevron Transliteration is broken in Unidecoder 1.1.1, comment out to use Unidecoder version
   [0x54,0x4D], 0x2122,  # Trademark Transliteration is broken in Unidecoder 1.1.1, comment out to use Unidecoder version
   [0x3F], 0xAF,         # Macron Transliteration is broken in Unidecoder 1.1.1, comment out to use Unidecoder version
   ]
-
-  extend self
 
   # Create new hash to hold mappings
 	@unicode_to_gsm = {}
   @unicode_to_ascii = {}
 
   # Place the Unicode to GSM mapping in a hash to make lookup easy
-	DEFAULT_CODEPOINT_MAPPING.each_slice(2){|gsm,unicode|@unicode_to_gsm[unicode] = gsm}
+	GSM_TO_UNICODE.each_slice(2){|gsm,unicode|@unicode_to_gsm[unicode] = gsm}
   # Place the Unicode to ASCII mapping in a hash to make lookup easy
-  EXTRA_UNICODE_TRANSLITERATIONS.each_slice(2){|ascii,unicode|@unicode_to_ascii[unicode] = ascii}
-
-  # Make a constant for easier reference
-	UNICODE_TO_GSM = @unicode_to_gsm
-  UNICODE_TO_ASCII = @unicode_to_ascii
+  ASCII_TO_UNICODE.each_slice(2){|ascii,unicode|@unicode_to_ascii[unicode] = ascii}
 
   # Array of the 1-to-1 Unicode to GSM Mappings for fast/easy pass-through without hash lookup
   ONE_TO_ONE = ((0x61..0x7A).to_a + (0x41..0x5A).to_a + (0x25..0x3F).to_a + (0x20..0x23).to_a + [0x1B,0x0A,0x0D])
 
-	def to_gsm string 
+	def self.to_gsm string 
     # Unpack the string (presumed to be UTF-8) to it's binary value
 		string.unpack('U*').collect{|unicode|
     if ONE_TO_ONE.include?(unicode)
       # Check if the binary value for the character is in 'identical' Unicode to GSM ranges
       unicode
-		elsif UNICODE_TO_GSM[unicode].nil?
+		elsif @unicode_to_gsm[unicode].nil?
       # If the Unicode char is not in the GSM mapping, proceed to transliteration
 
       # Check if the binary value for the character is in the Unicode to ASCII mapping
       # If not, transliterate the given character to ASCII using Unicoder
       # Else, use the ASCII binary value found in the mapping
-			ascii = (UNICODE_TO_ASCII[unicode].nil?) ? (Unidecoder.decode([unicode].pack('U*')).unpack('U*')) : (UNICODE_TO_ASCII[unicode])
+			ascii = (@unicode_to_ascii[unicode].nil?) ? (Unidecoder.decode([unicode].pack('U*')).unpack('U*')) : (@unicode_to_ascii[unicode])
 
       # Now that we have the ASCII binary value, try converting it to GSM again (all ASCII maps to GSM)
       gsm = to_gsm(ascii.pack('U*')).unpack('c*')
 		else
       # Else, use the GSM binary value found in the mapping
-			UNICODE_TO_GSM[unicode]
+			@unicode_to_gsm[unicode]
 		end
     # Take all the binary values, and pack them back up
 		}.flatten.pack('c*')
