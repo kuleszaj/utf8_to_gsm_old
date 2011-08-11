@@ -1,0 +1,7 @@
+
+For more information on utf8_to_gsm, see http://utf8_to_gsm.rubyforge.org
+
+NOTE: Change this information in PostInstall.txt 
+You can also delete it if you don't want it.
+
+
