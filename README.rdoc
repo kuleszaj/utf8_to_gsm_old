@@ -16,6 +16,8 @@ The utf8_to_gsm gem provides functionality to convert UTF-8 characters to their 
 
 == SYNOPSIS:
 
+  require 'utf8_to_gsm'
+
   Utf8ToGsm.to_gsm("Convert me to GSM")
 
 == REQUIREMENTS:
