@@ -8,7 +8,7 @@ The utf8_to_gsm gem provides functionality to convert UTF-8 characters to their 
 
 == FEATURES/PROBLEMS:
 
-* The utf8_to_gsm gem provides functionality to convert UTF-8 characters to their GSM equivalents.
+* The utf8_to_gsm gem provides functionality to convert UTF-8 characters (in a string) to their GSM equivalents for sending SMS messages via SMPP.
 * Additionally, any given UTF-8 characters which do not exist in the GSM alphabet are transliterated (with the help of 'unidecoder') to the closest possible ASCII character.
 * This library may be useful for people who need to send SMS messages via SMPP directly to an SMSC using the GSM-7 encoding ("Default SMSC Alphabet"), data_coding = 0x00.
 * Transliteration was chosen to provide the closest possible displayable character using GSM. Otherwise, most characters would simply not be displayed, or appear as "?" on mobile phones.
@@ -18,7 +18,9 @@ The utf8_to_gsm gem provides functionality to convert UTF-8 characters to their 
 
   require 'utf8_to_gsm'
 
-  Utf8ToGsm.to_gsm("Convert me to GSM")
+  Utf8ToGsm.to_gsm('Convert to GSM: !@#$%^&*()')
+  => "Convert to GSM: !\x00#\x02%\e\x14&*()" 
+
 
 == REQUIREMENTS:
 
@@ -27,6 +29,20 @@ The utf8_to_gsm gem provides functionality to convert UTF-8 characters to their 
 == INSTALL:
 
 * gem install utf8_to_gsm
+
+== WARNING:
+
+Transliteration used by this library is meant to provide the best possible ASCII replacement which is available for the given UTF-8 characters. It may be helpful to review the readme from the 'unicoder' gem which is utilized by this gem (https://github.com/norman/unidecoder/blob/master/README.md).
+
+Clearly, this is not ideal.  However, the GSM-7 default alphabet ("Default SMSC Alphabet") only allows a total of 127 characters, and so a very limited repertoire is available.
+
+It is presumed that providing the closest possible replacement is better than providing nothing at all.
+
+For example, if a user tries to send an SMS message via SMPP containing the character "À", there is a problem.  "À" does not exist in the GSM-7 default alphabet. Sending "A" as a replacement instead of "?" is probably more helpful to the recipient.
+
+For a truely accurate representation, UTF-16 or UCS-2 should generally be used for transmitting the payload of an SMPP PDU to the SMSC when non-GSM characters are being communicated.  However, not all telcos or SMSC's support UTF-16/UCS-16.
+
+Theoretically, GSM locking shift tables and GSM single shift tables should be usable to represent characters outside of the GSM-7 default alphabet.  However, it seems that telco support for this (especially via SMPP) is very limited.
 
 == LICENSE:
 
