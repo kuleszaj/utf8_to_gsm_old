@@ -1,6 +1,6 @@
 = utf8_to_gsm
 
-* http://github.com/#{github_username}/#{project_name}
+* http://github.com/kuleszaj/utf8_to_gsm
 
 == DESCRIPTION:
 
