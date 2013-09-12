@@ -1,5 +1,9 @@
 = utf8_to_gsm
 
+== NOTICE:
+
+This is part of an early attempt to create a gem which never was actually created. The code itself was for a specific bit of tricky problem solving. It is not maintained.
+
 * http://github.com/kuleszaj/utf8_to_gsm
 
 == DESCRIPTION:
